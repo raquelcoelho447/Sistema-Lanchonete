@@ -1,7 +1,7 @@
-from PyQt5 import uic,QtWidgets
-import connector 
+#from PyQt5 import uic,QtWidgets 
+#import connector 
 
-def funcaoPrincipal():
+""" def funcaoPrincipal():
     linha1 = tela01.lineEdit.text()
     linha2 = tela01.lineEdit_2.text()
 
@@ -13,21 +13,8 @@ tela01=uic.loadUi("tela01.ui")
 tela01.pushButton.clicked.connect(funcaoPrincipal)
 
 tela01.show()
-app.exec()
+app.exec() """
 
-#criação da primeira tabela pedido
-create table pedido (
-    idPedido INT NOT NULL AUTO_INCREMENT,
-    data VARCHAR (20),
-    total DOUBLE,
-    idCliente INT,
-    idFunc INT,
-    idMesa INT,
-    PRIMARY key (idPedido),
-    FOREIGN Key (idCliente) REFERENCES cliente(idCliente),
-    FOREIGN Key (idFunc) REFERENCES funcionario(idFunc),
-    FOREIGN Key (idMesa) REFERENCES mesa(idMesa)
-);
 
 #tabela cliente
 create table cliente(
@@ -54,19 +41,9 @@ create table mesa(
     numero INT,
     capacidade INT,
     tipo VARCHAR(20), 
-    turno VARCHAR(20),
-    especialidade VARCHAR(50),
     PRIMARY key (idMesa)
 );
 
-#tabela produto
-create table produto(
-    idProduto INT NOT NULL AUTO_INCREMENT,
-    nome VARCHAR (50),
-    preco DOUBLE,
-    PRIMARY key (idProduto),
-    FOREING key (idCategoria) REFERENCES categoria(idCategoria)
-);
 #tabela categoria
 create table categoria(
     idCategoria INT NOT NULL AUTO_INCREMENT,
@@ -74,13 +51,28 @@ create table categoria(
     PRIMARY key (idCategoria)
 );
 
-#tabela pagamento
-create table pagamento(
-    idPagamento INT NOT NULL AUTO_INCREMENT,
-    forma VARCHAR(20),
-    valor DOUBLE,
-    PRIMARY key(idPagamento),
-    FOREIGN Key (idPedido) REFERENCES pedido(idPedido)
+#tabela produto
+create table produto(
+    idProduto INT NOT NULL AUTO_INCREMENT,
+    nome VARCHAR (50),
+    preco DOUBLE,
+    idCategoria INT, 
+    PRIMARY key (idProduto),
+    FOREIGN key (idCategoria) REFERENCES categoria(idCategoria)
+);
+
+#criação da primeira tabela pedido
+create table pedido (
+    idPedido INT NOT NULL AUTO_INCREMENT,
+    data VARCHAR (20),
+    total DOUBLE,
+    idCliente INT,
+    idFunc INT,
+    idMesa INT,
+    PRIMARY key (idPedido),
+    FOREIGN Key (idCliente) REFERENCES cliente(idCliente),
+    FOREIGN Key (idFunc) REFERENCES funcionario(idFunc),
+    FOREIGN Key (idMesa) REFERENCES mesa(idMesa)
 );
 
 #tabela itemPedido
@@ -88,8 +80,112 @@ create table itemPedido(
     subTotal DOUBLE,
     quantidade INT,
     idPedido INT,
-    idProduto INT,   
+    idProduto INT,  
+    PRIMARY key (idPedido, idProduto) 
     FOREIGN KEY (idPedido) REFERENCES pedido(idPedido),
     FOREIGN KEY (idProduto) REFERENCES produto(idProduto)
 );
 
+#tabela pagamento
+create table pagamento(
+    idPagamento INT NOT NULL AUTO_INCREMENT,
+    forma VARCHAR(20),
+    valor DOUBLE,
+    idPedido INT,
+    PRIMARY key(idPagamento),
+    FOREIGN Key (idPedido) REFERENCES pedido(idPedido)
+);
+
+
+#inserindo dados de teste:
+
+#Categorias
+INSERT INTO categoria (nome) VALUES
+('Lanches'),
+('Bebidas'),
+('Sobremesas'),
+('Porções'),
+('Combos');
+
+#Clientes
+INSERT INTO cliente (telefone, cpf, nome) VALUES
+('(85) 99999-1111', '111.111.111-11', 'Ana Raquel'),
+('(85) 99999-2222', '222.222.222-22', 'João Pedro'),
+('(85) 99999-3333', '333.333.333-33', 'Maria Clara'),
+('(85) 99999-4444', '444.444.444-44', 'Carlos Silva'),
+('(85) 99999-5555', '555.555.555-55', 'Fernanda Lima');
+
+#Funcionários
+INSERT INTO funcionario (salario, cpf, nome, tipo) VALUES
+(1800.00, '666.666.666-66', 'Lucas Souza', 'Garçom'),
+(2200.00, '777.777.777-77', 'Beatriz Santos', 'Caixa'),
+(3000.00, '888.888.888-88', 'Rafael Costa', 'Gerente'),
+(1800.00, '999.999.999-99', 'Juliana Melo', 'Garçom'),
+(2000.00, '000.000.000-00', 'Paulo Henrique', 'Cozinheiro');
+
+#Mesas
+INSERT INTO mesa (status, numero, capacidade) VALUES
+('Disponível', 1, 4),
+('Ocupada', 2, 2),
+('Disponível', 3, 6),
+('Ocupada', 4, 4),
+('Disponível', 5, 8);
+
+#Produtos
+INSERT INTO produto (nome, preco, idCategoria) VALUES
+('X-Burguer', 15.00, 1),
+('X-Salada', 17.00, 1),
+('Coca-Cola', 6.00, 2),
+('Suco de Laranja', 8.00, 2),
+('Pudim', 10.00, 3),
+('Batata Frita', 12.00, 4),
+('Combo X-Burguer', 25.00, 5),
+('Água Mineral', 4.00, 2);
+
+#Pedidos
+INSERT INTO pedido (data, total, idCliente, idFunc, idMesa) VALUES
+('2026-06-18', 38.00, 1, 1, 2),
+('2026-06-18', 25.00, 2, 4, 4),
+('2026-06-17', 47.00, 3, 1, 1),
+('2026-06-17', 19.00, 4, 2, 3),
+('2026-06-16', 62.00, 5, 3, 5);
+
+#ItensPedido
+INSERT INTO itempedido (subTotal, quantidade, idPedido, idProduto) VALUES
+(15.00, 1, 1, 1),
+(17.00, 1, 1, 2),
+(6.00, 1, 1, 3),
+(25.00, 1, 2, 7),
+(17.00, 1, 3, 2),
+(12.00, 2, 3, 6),
+(8.00, 1, 3, 4),
+(15.00, 1, 4, 1),
+(4.00, 1, 4, 8),
+(25.00, 2, 5, 7),
+(12.00, 1, 5, 6);
+
+#Pagamentos
+INSERT INTO pagamento (forma, valor, idPedido) VALUES
+('Cartão de Crédito', 38.00, 1),
+('Pix', 25.00, 2),
+('Dinheiro', 47.00, 3),
+('Cartão de Débito', 19.00, 4),
+('Pix', 62.00, 5);
+
+
+#RELATÓRIOS:
+
+#Where:
+SELECT idPedido, data, total
+FROM pedido
+WHERE total > 30;
+
+#Exemplo para consulta join:
+SELECT 
+    pedido.idPedido,
+    cliente.nome AS cliente,
+    funcionario.nome AS atendente,
+    pedido.total
+FROM pedido
+JOIN cliente ON pedido.idCliente = cliente.idCliente
+JOIN funcionario ON pedido.idFunc = funcionario.idFunc;
