@@ -1,74 +1,55 @@
-import os
-
 from pathlib import Path
-from cliente import gerenciar_cliente
-from funcionario import gerenciar_funcionario
-from mesa import gerenciar_mesa
-from produto import gerenciar_produto
-from pedido import gerenciar_pedido
 from PyQt5 import uic, QtWidgets
 
-# executar o sistema
-app = QtWidgets.QApplication([])
+PASTA = Path(__file__).parent
 
-ui_path1 = Path(__file__).with_name("telaPrincipal.ui")
-telaPrincipal = uic.loadUi(str(ui_path1))
+# Lista para manter referência das janelas abertas
+# (sem isso, o Python "esquece" a janela e ela fecha sozinha)
+janelas_abertas = []
 
-telaPrincipal.show()
-app.exec()
 
-# Sistema começa aqui
-def funcao_principal():
-    print(f"Entrando no sistema da Lanchonete SendYourWish")
+def abrir_tela(nome_arquivo_ui):
+    caminho = PASTA / nome_arquivo_ui
+    tela = uic.loadUi(str(caminho))
+    janelas_abertas.append(tela)
+    tela.show()
+    return tela
 
-    while (True):
-        # MENU
-        print("------------Menu------------")
-        print("[1] - Gerenciamento")
-        print("[2] - Gerenciar Pedido")
-        print("[3] - Gerenciar Mesa")
-        print("[4] - Gerenciar Comidas")
-        print("[5] - Sair")
-        opcao = int(input("Digite a opção desejada: "))
 
-        # Gerenciamento
-        if opcao == 1:
-            os.system('cls' if os.name == 'nt' else 'clear')
+def abrir_tela_clientes():
+    abrir_tela("telaPrincipal.ui")  # placeholder até existir telaClientes.ui
 
-            print("Deseja gerenciar qual das opções: ")
-            print("[1] para Cliente")
-            print("[2] para Funcionário")
-            escolha = int(input("Digite a opção desejada: "))
 
-            # Gerenciar cliente
-            if escolha == 1:
-                gerenciar_cliente()
+def abrir_tela_funcionarios():
+    abrir_tela("telaFuncionários.ui")
 
-            # Gerenciar Funcionario
-            elif escolha == 2:
-                gerenciar_funcionario()
 
-        # Gerenciar pedido
-        elif opcao == 2:
-            gerenciar_pedido()
+def abrir_tela_pedidos():
+    abrir_tela("telaPedidos.ui")
 
-        # Gerenciar mesas
-        elif opcao == 3:
-            gerenciar_mesa()
 
-        # Gerenciar as Comidas
-        elif opcao == 4:
-            gerenciar_produto()
+def abrir_tela_mesas():
+    abrir_tela("telaMesas.ui")
 
-        # Sair do sistema
-        elif opcao == 5:
-            exit()
 
-        # Quando o usuário digita um valor inválido
-        else:
-            os.system('cls' if os.name == 'nt' else 'clear')
-            print("Opcao inválida! Tente Novamente.")
+def abrir_tela_comidas():
+    abrir_tela("telaComidas.ui")
+
+
+def main():
+    app = QtWidgets.QApplication([])
+
+    telaPrincipal = uic.loadUi(str(PASTA / "telaPrincipal.ui"))
+
+    telaPrincipal.bt_gerCliente.clicked.connect(abrir_tela_clientes)
+    telaPrincipal.bt_gerFunc.clicked.connect(abrir_tela_funcionarios)
+    telaPrincipal.bt_gerPedidos.clicked.connect(abrir_tela_pedidos)
+    telaPrincipal.bt_gerMesas.clicked.connect(abrir_tela_mesas)
+    telaPrincipal.bt_gerComidas.clicked.connect(abrir_tela_comidas)
+
+    telaPrincipal.show()
+    app.exec()
 
 
 if __name__ == "__main__":
-    funcao_principal()
+    main()
