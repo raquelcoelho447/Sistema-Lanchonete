@@ -335,7 +335,8 @@ def validarPedido():
             telaPedidos_fazerPedido_validacao.txt_resultadoValidacao_func.setText("Não Cadastrado")
 
 
-def 
+# def 
+# listar_comidas()
 
 
 def buscarCli_id(id):
@@ -399,7 +400,7 @@ def reservarMesas():
         dado = (int(numero_idMesa),)
         cursor.execute(comando_SQL, dado)
         banco.commit()
-        # aqui vai abrir a tela de exibir o cardápio
+        
         telaPedidos_fazerPedido_reservarMesa.close()
         telaPedidos_fazerPedido_exibirCardapio.show()
     else:
@@ -783,7 +784,6 @@ ui_path16 = Path(__file__).with_name("telaPedidos_fazerPedido_exibirCardapio.ui"
 telaPedidos_fazerPedido_exibirCardapio = uic.loadUi(str(ui_path16))
 
 # botão da tela pedidos_fazerPedido_exibirCardapio
-
 
 # telaPedidos_fazerPedido_exibirCardapio
 

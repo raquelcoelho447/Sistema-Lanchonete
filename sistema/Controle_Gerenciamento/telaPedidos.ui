@@ -165,7 +165,7 @@
      <string>Pedidos</string>
     </property>
     <property name="alignment">
-     <set>AlignCenter</set>
+     <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
    <zorder>bt_fazerPedido</zorder>

@@ -40,7 +40,7 @@
      <set>AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="bt_reservarMesa_2">
+   <widget class="QPushButton" name="bt_exibirCardapio">
     <property name="geometry">
      <rect>
       <x>230</x>
