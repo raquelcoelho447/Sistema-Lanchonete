@@ -5,6 +5,7 @@ from PyQt5 import uic, QtWidgets
 numero_idFunc = 0
 numero_idPedido = 0
 numero_idMesa = 0
+numero_idCliente = 0
 idCli_res = 0
 idFunc_res = 0
 numero_idComida = 0
@@ -17,7 +18,7 @@ carrinho = []                 # lista de dicts: {idProduto, nome, preco, quantid
 banco = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="Vieira_maria22",
+    passwd="Rachel1307.",
     database="lanchonete"
 )
 
@@ -26,7 +27,6 @@ def gerenciarClientes():
     telaPrincipal.close()
     telaClientes.show()
     listarClientes()
-    telaClientes.bt_voltar.clicked.connect(lambda: [telaClientes.close(), telaPrincipal.show()])
 
 
 def listarClientes():
@@ -79,21 +79,23 @@ def buscarCliente():
 
 
 def atualizarCliente():
-    global numero_id_cliente
+    global numero_idCliente
     linha = telaClientes.tabela_clientes.currentRow()
 
     if linha == -1:
+        QtWidgets.QMessageBox.warning(None, "Nenhum cliente selecionado", "Selecione um cliente antes de atualizar.")
         return
 
-    cursor = banco.cursor()
-    cursor.execute("SELECT idCliente FROM cliente")
-    dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
+    valor_id = int(telaClientes.tabela_clientes.item(linha, 0).text())
 
-    cursor.execute("SELECT * FROM cliente WHERE idCliente = %s", (int(valor_id),))
+    cursor = banco.cursor()
+    cursor.execute("SELECT * FROM cliente WHERE idCliente = %s", (valor_id,))
     cliente = cursor.fetchone()
 
-    numero_id_cliente = valor_id
+    if not cliente:
+        return
+
+    numero_idCliente = valor_id
 
     telaClientes_atualizar.txt_idAtualizarCliente.setText(str(cliente[0]))
     telaClientes_atualizar.txt_telefoneAtualizarCliente.setText(str(cliente[1]))
@@ -105,7 +107,7 @@ def atualizarCliente():
 
 
 def salvarCliente():
-    global numero_id_cliente
+    global numero_idCliente
     nome     = telaClientes_atualizar.txt_nomeAtualizarCliente.text()
     cpf      = telaClientes_atualizar.txt_cpfAtualizarCliente.text()
     telefone = telaClientes_atualizar.txt_telefoneAtualizarCliente.text()
@@ -113,7 +115,7 @@ def salvarCliente():
     cursor = banco.cursor()
     cursor.execute(
         "UPDATE cliente SET nome = %s, cpf = %s, telefone = %s WHERE idCliente = %s",
-        (str(nome), str(cpf), str(telefone), int(numero_id_cliente))
+        (str(nome), str(cpf), str(telefone), int(numero_idCliente))
     )
     banco.commit()
 
@@ -125,16 +127,16 @@ def removerCliente():
     linha = telaClientes.tabela_clientes.currentRow()
 
     if linha == -1:
+        QtWidgets.QMessageBox.warning(None, "Nenhum cliente selecionado", "Selecione um cliente antes de remover.")
         return
 
-    telaClientes.tabela_clientes.removeRow(linha)
+    valor_id = int(telaClientes.tabela_clientes.item(linha, 0).text())
 
     cursor = banco.cursor()
-    cursor.execute("SELECT idCliente FROM cliente")
-    dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
-    cursor.execute("DELETE FROM cliente WHERE idCliente = %s", (int(valor_id),))
+    cursor.execute("DELETE FROM cliente WHERE idCliente = %s", (valor_id,))
     banco.commit()
+
+    atualizarTabelaClientes()
 
 
 def atualizarTabelaClientes():
@@ -155,8 +157,6 @@ def atualizarTabelaClientes():
 def gerenciarFunc():
     telaPrincipal.close()
     telaFunc.show()
-
-    telaFunc.bt_voltar.clicked.connect(lambda: [telaFunc.close(), telaPrincipal.show()])
 
 
 def cadastrarFunc():
@@ -214,22 +214,28 @@ def atualizarFunc():
     global numero_idFunc
     linha = telaFunc.tabela_funcionarios.currentRow()
 
+    if linha == -1:
+        QtWidgets.QMessageBox.warning(None, "Nenhum funcionário selecionado", "Selecione um funcionário antes de atualizar.")
+        return
+
+    valor_id = int(telaFunc.tabela_funcionarios.item(linha, 0).text())
+
     cursor = banco.cursor()
-    comando_SQL = "SELECT idFunc FROM funcionario"
-    cursor.execute(comando_SQL)
-    dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
     comando_SQL = "SELECT * FROM funcionario WHERE idFunc = %s"
-    dado = (int(valor_id),)
+    dado = (valor_id,)
     cursor.execute(comando_SQL, dado)
-    func = cursor.fetchall()
+    func = cursor.fetchone()
+
+    if not func:
+        return
+
     telaFunc_atualizar.show()
 
     numero_idFunc = valor_id
 
-    telaFunc_atualizar.txt_nomeAtualizarFunc.setText(str(func[0][3]))
-    telaFunc_atualizar.txt_salarioAtualizarFunc.setText(str(func[0][1]))
-    telaFunc_atualizar.txt_funcaoAtualizarFunc.setText(str(func[0][4]))
+    telaFunc_atualizar.txt_nomeAtualizarFunc.setText(str(func[3]))
+    telaFunc_atualizar.txt_salarioAtualizarFunc.setText(str(func[1]))
+    telaFunc_atualizar.txt_funcaoAtualizarFunc.setText(str(func[4]))
 
 
 def salvarFuncionario():
@@ -253,17 +259,18 @@ def salvarFuncionario():
 
 def removerFuncionario():
     linha = telaFunc.tabela_funcionarios.currentRow()
-    telaFunc.tabela_funcionarios.removeRow(linha)
+
+    if linha == -1:
+        QtWidgets.QMessageBox.warning(None, "Nenhum funcionário selecionado", "Selecione um funcionário antes de remover.")
+        return
+
+    valor_id = int(telaFunc.tabela_funcionarios.item(linha, 0).text())
 
     cursor = banco.cursor()
-    comando_SQL = "SELECT idFunc FROM funcionario"
-    cursor.execute(comando_SQL)
-    dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
-    comando_SQL = "DELETE FROM funcionario WHERE idFunc = %s"
-    dado = (int(valor_id),)
-    cursor.execute(comando_SQL, dado)
+    cursor.execute("DELETE FROM funcionario WHERE idFunc = %s", (valor_id,))
     banco.commit()
+
+    atualizarTabelaFunc()
 
 
 def atualizarTabelaFunc():
@@ -287,7 +294,6 @@ def gerenciarPedidos():
     telaPrincipal.close()
     telaPedidos.show()
     atualizarTotalPedidos()
-    telaPedidos.bt_voltar.clicked.connect(lambda: [telaPedidos.close(), telaPrincipal.show()])
 
 
 def abrirTelaValidacaoPedido():
@@ -511,14 +517,10 @@ def reservarMesas():
     if linha < 0:
         return
 
-    # Busca só as mesas disponíveis (mesma query usada pra popular a tabela)
-    cursor = banco.cursor()
-    comando_SQL = "SELECT idMesa FROM mesa WHERE status = 'Disponível'"
-    cursor.execute(comando_SQL)
-    dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
+    valor_id = int(telaPedidos_fazerPedido_reservarMesa.tabela_mesasPedidos.item(linha, 0).text())
 
     numero_idMesa = valor_id
+    cursor = banco.cursor()
     comando_SQL = "UPDATE mesa SET status = 'Ocupada' WHERE idMesa = %s"
     cursor.execute(comando_SQL, (int(numero_idMesa),))
     banco.commit()
@@ -536,19 +538,10 @@ def atualizarPedido():
         QtWidgets.QMessageBox.warning(None, "Nenhum pedido selecionado", "Selecione um pedido na tabela antes de atualizar.")
         return
 
+    valor_id = int(telaPedidos.tabela_pedidos.item(linha, 0).text())
+
     cursor = banco.cursor()
-    cursor.execute("SELECT idPedido FROM pedido ORDER BY idPedido")
-    dados_lidos = cursor.fetchall()
-
-    if not dados_lidos:
-        QtWidgets.QMessageBox.warning(None, "Sem pedidos", "Não há pedidos cadastrados no sistema.")
-        return
-
-    if linha >= len(dados_lidos):
-        return
-
-    valor_id = dados_lidos[linha][0]
-    cursor.execute("SELECT * FROM pedido WHERE idPedido = %s", (int(valor_id),))
+    cursor.execute("SELECT * FROM pedido WHERE idPedido = %s", (valor_id,))
     pedido = cursor.fetchone()
 
     if not pedido:
@@ -591,22 +584,20 @@ def removerPedido():
     linha = telaPedidos.tabela_pedidos.currentRow()
 
     if linha < 0:
+        QtWidgets.QMessageBox.warning(None, "Nenhum pedido selecionado", "Selecione um pedido antes de remover.")
         return
 
-    cursor = banco.cursor()
-    comando_SQL = "SELECT idPedido FROM pedido ORDER BY idPedido"
-    cursor.execute(comando_SQL)
-    dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
+    valor_id = int(telaPedidos.tabela_pedidos.item(linha, 0).text())
 
+    cursor = banco.cursor()
     # Remove filhos antes de deletar o pedido (respeita FK)
-    cursor.execute("DELETE FROM itempedido WHERE idPedido = %s", (int(valor_id),))
-    cursor.execute("DELETE FROM pagamento WHERE idPedido = %s", (int(valor_id),))
-    cursor.execute("DELETE FROM pedido WHERE idPedido = %s", (int(valor_id),))
+    cursor.execute("DELETE FROM itempedido WHERE idPedido = %s", (valor_id,))
+    cursor.execute("DELETE FROM pagamento WHERE idPedido = %s", (valor_id,))
+    cursor.execute("DELETE FROM pedido WHERE idPedido = %s", (valor_id,))
     banco.commit()
 
-    telaPedidos.tabela_pedidos.removeRow(linha)
     atualizarTotalPedidos()
+    atualizarTabelaPedidos()
 
 
 def listarPedidos():
@@ -658,8 +649,6 @@ def gerenciarPagamentos():
     exibir_pedidos_pagamento()  # carrega a tabela antes de mostrar a tela
     telaPedidos_pagamento.show()
 
-    telaPedidos_pagamento.bt_voltar.clicked.connect(lambda: [telaPedidos_pagamento.close(), telaPedidos.show()])
-
 
 def exibir_pedidos_pagamento():
     # Popula a tabela da tela de pagamento com todos os pedidos
@@ -684,15 +673,9 @@ def confirmarPagamento():
     if linha < 0:
         return
 
+    numero_idPedido = int(telaPedidos_pagamento.tabela_pedidosPagamento.item(linha, 0).text())
+
     cursor = banco.cursor()
-    cursor.execute("SELECT idPedido FROM pedido ORDER BY idPedido")
-    dados_lidos = cursor.fetchall()
-
-    if linha >= len(dados_lidos):
-        return
-
-    numero_idPedido = dados_lidos[linha][0]
-
     cursor.execute(
         "SELECT total, idMesa FROM pedido WHERE idPedido = %s",
         (int(numero_idPedido),)
@@ -749,8 +732,6 @@ def gerenciarMesas():
     telaPrincipal.close()
     telaMesas.show()
 
-    telaMesas.bt_voltar.clicked.connect(lambda: [telaMesas.close(), telaPrincipal.show()])
-
 
 def cadastrarMesa():
     telaMesas.close()
@@ -786,17 +767,18 @@ def confirmarCadastro_mesa():
 
 def removerMesa():
     linha = telaMesas.tabela_mesas.currentRow()
-    telaMesas.tabela_mesas.removeRow(linha)
+
+    if linha == -1:
+        QtWidgets.QMessageBox.warning(None, "Nenhuma mesa selecionada", "Selecione uma mesa antes de remover.")
+        return
+
+    valor_id = int(telaMesas.tabela_mesas.item(linha, 0).text())
 
     cursor = banco.cursor()
-    comando_SQL = "SELECT idMesa FROM mesa"
-    cursor.execute(comando_SQL)
-    dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
-    comando_SQL = "DELETE from mesa WHERE idMesa = %s"
-    dado = (int(valor_id),)
-    cursor.execute(comando_SQL, dado)
+    cursor.execute("DELETE FROM mesa WHERE idMesa = %s", (valor_id,))
     banco.commit()
+
+    atualizarTabelaMesas()
 
 
 def listarMesas():
@@ -834,7 +816,6 @@ def atualizarTabelaMesas():
 def gerenciarComidas():
     telaPrincipal.close()
     telaComidas.show()
-    telaComidas.bt_voltar.clicked.connect(lambda: [telaComidas.close(), telaPrincipal.show()])
 
 
 def cadastrarComida():
@@ -878,18 +859,14 @@ def removerComida():
         QtWidgets.QMessageBox.warning(None, "Nenhum produto selecionado", "Selecione um produto antes de remover.")
         return
 
-    cursor = banco.cursor()
-    comando_SQL = "SELECT idProduto FROM produto"
-    cursor.execute(comando_SQL)
-    dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
+    valor_id = int(telaComidas.tabela_cardapio.item(linha, 0).text())
 
+    cursor = banco.cursor()
     # Remove itempedido que referenciam esse produto antes de deletar o produto (FK)
-    cursor.execute("DELETE FROM itempedido WHERE idProduto = %s", (int(valor_id),))
-    cursor.execute("DELETE FROM produto WHERE idProduto = %s", (int(valor_id),))
+    cursor.execute("DELETE FROM itempedido WHERE idProduto = %s", (valor_id,))
+    cursor.execute("DELETE FROM produto WHERE idProduto = %s", (valor_id,))
     banco.commit()
 
-    telaComidas.tabela_cardapio.removeRow(linha)
     atualizarTabelaComidas()
 
 
@@ -1095,5 +1072,14 @@ telaPedidos_pagamento.bt_confirmarPagamento.clicked.connect(confirmarPagamento)
 
 
 # aqui é pra mostrar a TELA PRINCIPAL DO SISTEMA e executar o SISTEMA
+
+# Conexões dos botões "voltar" de cada tela (centralizadas aqui para não duplicar a cada abertura)
+telaClientes.bt_voltar.clicked.connect(lambda: [telaClientes.close(), telaPrincipal.show()])
+telaFunc.bt_voltar.clicked.connect(lambda: [telaFunc.close(), telaPrincipal.show()])
+telaPedidos.bt_voltar.clicked.connect(lambda: [telaPedidos.close(), telaPrincipal.show()])
+telaPedidos_pagamento.bt_voltar.clicked.connect(lambda: [telaPedidos_pagamento.close(), telaPedidos.show()])
+telaMesas.bt_voltar.clicked.connect(lambda: [telaMesas.close(), telaPrincipal.show()])
+telaComidas.bt_voltar.clicked.connect(lambda: [telaComidas.close(), telaPrincipal.show()])
+
 telaPrincipal.show()
 app.exec()
