@@ -3,91 +3,170 @@
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
-   <rect><x>0</x><y>0</y><width>616</width><height>500</height></rect>
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>616</width>
+    <height>500</height>
+   </rect>
   </property>
-  <property name="windowTitle"><string>MainWindow</string></property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-
    <widget class="QPushButton" name="bt_voltar">
     <property name="geometry">
-     <rect><x>10</x><y>10</y><width>91</width><height>31</height></rect>
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(190, 211, 255);</string>
     </property>
-    <property name="text"><string>Voltar</string></property>
+    <property name="text">
+     <string>Voltar</string>
+    </property>
    </widget>
-
    <widget class="QLabel" name="label">
     <property name="geometry">
-     <rect><x>0</x><y>30</y><width>621</width><height>51</height></rect>
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>621</width>
+      <height>51</height>
+     </rect>
     </property>
     <property name="font">
-     <font><family>Microsoft Sans Serif</family><pointsize>24</pointsize></font>
+     <font>
+      <family>Microsoft Sans Serif</family>
+      <pointsize>24</pointsize>
+     </font>
     </property>
-    <property name="text"><string>Clientes</string></property>
-    <property name="alignment"><set>AlignCenter</set></property>
+    <property name="text">
+     <string>Clientes</string>
+    </property>
+    <property name="alignment">
+     <set>AlignCenter</set>
+    </property>
    </widget>
-
    <widget class="QLineEdit" name="txt_buscarCliente">
     <property name="geometry">
-     <rect><x>90</x><y>100</y><width>351</width><height>31</height></rect>
+     <rect>
+      <x>90</x>
+      <y>100</y>
+      <width>351</width>
+      <height>31</height>
+     </rect>
     </property>
    </widget>
-
    <widget class="QPushButton" name="bt_buscarCliente">
     <property name="geometry">
-     <rect><x>450</x><y>100</y><width>91</width><height>31</height></rect>
+     <rect>
+      <x>450</x>
+      <y>100</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(190, 211, 255);</string>
     </property>
-    <property name="text"><string>Buscar</string></property>
+    <property name="text">
+     <string>Buscar</string>
+    </property>
    </widget>
-
    <widget class="QTableWidget" name="tabela_clientes">
     <property name="geometry">
-     <rect><x>40</x><y>150</y><width>531</width><height>271</height></rect>
+     <rect>
+      <x>40</x>
+      <y>150</y>
+      <width>531</width>
+      <height>271</height>
+     </rect>
     </property>
-    <column><property name="text"><string>ID</string></property></column>
-    <column><property name="text"><string>Telefone</string></property></column>
-    <column><property name="text"><string>CPF</string></property></column>
-    <column><property name="text"><string>Nome</string></property></column>
+    <column>
+     <property name="text">
+      <string>ID</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Telefone</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>CPF</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Nome</string>
+     </property>
+    </column>
    </widget>
-
    <widget class="QPushButton" name="bt_cadastrarCliente">
     <property name="geometry">
-     <rect><x>40</x><y>430</y><width>151</width><height>51</height></rect>
+     <rect>
+      <x>40</x>
+      <y>430</y>
+      <width>151</width>
+      <height>51</height>
+     </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(209, 187, 255);</string>
     </property>
-    <property name="text"><string>Cadastrar</string></property>
+    <property name="text">
+     <string>Cadastrar</string>
+    </property>
    </widget>
-
    <widget class="QPushButton" name="bt_atualizarCliente">
     <property name="geometry">
-     <rect><x>240</x><y>430</y><width>151</width><height>51</height></rect>
+     <rect>
+      <x>240</x>
+      <y>430</y>
+      <width>151</width>
+      <height>51</height>
+     </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(209, 187, 255);</string>
     </property>
-    <property name="text"><string>Atualizar</string></property>
+    <property name="text">
+     <string>Atualizar</string>
+    </property>
    </widget>
-
    <widget class="QPushButton" name="bt_excluirCliente">
     <property name="geometry">
-     <rect><x>430</x><y>430</y><width>151</width><height>51</height></rect>
+     <rect>
+      <x>430</x>
+      <y>430</y>
+      <width>151</width>
+      <height>51</height>
+     </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(209, 187, 255);</string>
     </property>
-    <property name="text"><string>Excluir</string></property>
+    <property name="text">
+     <string>Excluir</string>
+    </property>
    </widget>
-
+   <zorder>label</zorder>
+   <zorder>txt_buscarCliente</zorder>
+   <zorder>bt_buscarCliente</zorder>
+   <zorder>tabela_clientes</zorder>
+   <zorder>bt_cadastrarCliente</zorder>
+   <zorder>bt_atualizarCliente</zorder>
+   <zorder>bt_excluirCliente</zorder>
+   <zorder>bt_voltar</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
